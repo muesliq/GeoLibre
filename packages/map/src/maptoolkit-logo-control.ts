@@ -8,10 +8,15 @@ const MAPTOOLKIT_LABEL = "Maptoolkit";
 // maptoolkit.org/assets/maptoolkit-attribution.png), vendored as a static
 // asset served from the app's own origin — apps/geolibre-desktop/public/ —
 // rather than linked live, so the control keeps working offline and under
-// the Tauri CSP without adding maptoolkit.org to its allowlist. 227×72 source;
-// Maptoolkit's attribution terms require the mark be shown at a minimum
-// height of 24px, which the CSS pins.
-const MAPTOOLKIT_LOGO_URL = "/maptoolkit-attribution.png";
+// the Tauri CSP without adding maptoolkit.org to its allowlist. Resolved from
+// the app's base path (not a hardcoded `/`), matching CesiumCanvas's
+// APP_BASE_URL, so it also resolves under a sub-path deploy (GEOLIBRE_APP_BASE,
+// e.g. "/gis/") or a relative one ("./"). 227×72 source; Maptoolkit's
+// attribution terms require the mark be shown at a minimum height of 24px,
+// which the CSS pins.
+const APP_BASE_URL =
+  (import.meta as ImportMeta & { env?: { BASE_URL?: string } }).env?.BASE_URL ?? "/";
+const MAPTOOLKIT_LOGO_URL = `${APP_BASE_URL}maptoolkit-attribution.png`;
 
 /**
  * A MapLibre control that shows the Maptoolkit logo as a link back to
