@@ -1146,19 +1146,25 @@ export function TopToolbar({
     });
   };
 
-  // The Maptoolkit logo is Maptoolkit-basemap attribution, so it must not linger
-  // over a different basemap. When no Maptoolkit basemap is active (see
-  // isMaptoolkitBasemapActive), turn the logo back off through the same path as
-  // the menu, so the map controller and this menu's checkmark stay in sync.
+  // The Maptoolkit logo is Maptoolkit-basemap attribution, required by their
+  // terms whenever a Maptoolkit basemap is in use (see isMaptoolkitBasemapActive)
+  // and meaningless otherwise, so it tracks that flag automatically: shown the
+  // moment a Maptoolkit basemap activates, hidden the moment it doesn't, through
+  // the same path as the menu so the map controller and its checkmark stay in
+  // sync. The effect only depends on the flag, not `controlsVisible`, so a
+  // manual toggle from the menu while a Maptoolkit basemap stays active (on or
+  // off) is left alone until the flag itself flips again.
   const maptoolkitBasemapActive = useAppStore((s) =>
     isMaptoolkitBasemapActive(s.basemapStyleUrl, s.layers),
   );
   useEffect(() => {
-    if (maptoolkitBasemapActive) return;
     setControlsVisible((current) => {
-      if (!current["maptoolkit-logo"]) return current;
-      mapControllerRef.current?.setBuiltInControlVisible("maptoolkit-logo", false);
-      return { ...current, "maptoolkit-logo": false };
+      if (current["maptoolkit-logo"] === maptoolkitBasemapActive) return current;
+      mapControllerRef.current?.setBuiltInControlVisible(
+        "maptoolkit-logo",
+        maptoolkitBasemapActive,
+      );
+      return { ...current, "maptoolkit-logo": maptoolkitBasemapActive };
     });
   }, [maptoolkitBasemapActive, mapControllerRef]);
 

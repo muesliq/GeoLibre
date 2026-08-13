@@ -17,9 +17,11 @@ function isMaptoolkitHost(url: string): boolean {
  * is served from maptoolkit.org (their style basemaps live at
  * `styles.maptoolkit.org`), or a *visible* stacked raster basemap layer is
  * tagged with the Maptoolkit provider by the basemap control. Drives the
- * Controls → Logos gating and the auto-removal of the Maptoolkit logo when the
- * basemap changes away. Matches the host exactly (not a loose substring) and
- * ignores hidden layers, so the logo only shows while Maptoolkit tiles do.
+ * Controls → Logos gating and the automatic show/hide of the Maptoolkit logo
+ * as the active basemap changes (see TopToolbar). Matches the host exactly
+ * (not a loose substring) and ignores hidden layers, so the logo only tracks
+ * the basemap, not an unrelated data layer that happens to point at the same
+ * host.
  */
 export function isMaptoolkitBasemapActive(
   basemapStyleUrl: string,
